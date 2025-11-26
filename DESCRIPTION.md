@@ -1,4 +1,4 @@
-I have used the cluster_maker to generate the data (,y_data.csv) through the file 'Generating_data.py'.
+I have used the cluster_maker to generate the data (my_data.csv) through the file 'Generating_data.py'.
 
 This 'my_data.csv' is then used in the cluster_analysis.py file
 
