@@ -37,33 +37,46 @@ def define_dataframe_structure(column_specs: List[Dict[str, Any]]) -> pd.DataFra
     if not column_specs:
         raise ValueError("column_specs must be a non-empty list of dictionaries.")
 
-    # Check consistency of 'reps' lengths
+    # Extract all reps lengths and ensure consistency
     reps_lengths = [len(spec.get("reps", [])) for spec in column_specs]
     if len(set(reps_lengths)) != 1:
         raise ValueError("All 'reps' lists must have the same length (number of clusters).")
 
     n_clusters = reps_lengths[0]
-    data = {}
+    if n_clusters == 0:
+        raise ValueError("'reps' lists must not be empty.")
+
+    data: Dict[str, list] = {}
+
     for spec in column_specs:
         name = spec.get("name")
         reps = spec.get("reps")
+
         if name is None or reps is None:
             raise ValueError("Each column_specs entry must have 'name' and 'reps' keys.")
+
         if not isinstance(reps, Sequence):
             raise TypeError("'reps' must be a sequence of values.")
+
         if len(reps) != n_clusters:
             raise ValueError("All 'reps' lists must have the same length.")
+
         data[name] = list(reps)
 
-    seed_df = pd.DataFrame.from_dict(data, orient="index")
-    seed_df.index.name = "cluster_id"
+    # Create DataFrame with:
+    #   rows = clusters
+    #   columns = feature names
+    seed_df = pd.DataFrame(data)
+
     return seed_df
+
+
 
 
 def simulate_data(
     seed_df: pd.DataFrame,
     n_points: int = 100,
-    cluster_std: str = "1.0",
+    cluster_std: float = 1.0,
     random_state: int | None = None,
 ) -> pd.DataFrame:
     """
@@ -95,7 +108,7 @@ def simulate_data(
     centres = seed_df.to_numpy(dtype=float)
     n_clusters, n_features = centres.shape
 
-    # Distribute points as evenly as possible across clusters.
+    # Distribute points as evenly as possible across clusters
     base = n_points // n_clusters
     remainder = n_points % n_clusters
     counts = np.full(n_clusters, base, dtype=int)
