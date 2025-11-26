@@ -67,3 +67,34 @@ def standardise_features(X: np.ndarray) -> np.ndarray:
         raise TypeError("X must be a NumPy array.")
     scaler = StandardScaler()
     return scaler.fit_transform(X)
+
+def pca_transform(X: np.ndarray, n_components: int = 2) -> np.ndarray:
+    """
+    Perform PCA using SVD and return the data projected onto the first
+    n_components principal components.
+
+    Parameters
+    ----------
+    X : array-like, shape (n_samples, n_features)
+        Input numeric data.
+
+    n_components : int
+        Number of principal components to keep.
+
+    Returns
+    -------
+    X_pca : array, shape (n_samples, n_components)
+        Transformed data.
+    """
+
+    # Step 1: centre the data
+    X_centered = X - np.mean(X, axis=0)
+
+    # Step 2: SVD (numerically stable PCA)
+    U, S, Vt = np.linalg.svd(X_centered, full_matrices=False)
+
+    # Step 3: project onto first principal components
+    components = Vt[:n_components]      # shape (n_components, n_features)
+    X_pca = X_centered @ components.T   # shape (n_samples, n_components)
+
+    return X_pca
