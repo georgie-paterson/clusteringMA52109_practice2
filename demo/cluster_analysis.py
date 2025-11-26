@@ -9,67 +9,70 @@ from __future__ import annotations
 import os
 import sys
 import pandas as pd
+import numpy as np
 
+# --- 1. PATH FIX: Automatically adds the project root to sys.path ---
+# This resolves 'from cluster_maker import...' without needing PYTHONPATH=.
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+if project_root not in sys.path:
+    sys.path.append(project_root)
+# -----------------------------------------------------------------
+
+# New imports needed for self-contained data generation
 from cluster_maker import run_clustering, select_features
+from cluster_maker.dataframe_builder import define_dataframe_structure, simulate_data
 
 OUTPUT_DIR = "demo_output"
+# Define a temporary path for the synthetic input data
+TEMP_INPUT_PATH = os.path.join(OUTPUT_DIR, "temp_data_input.csv")
 
 
-def main(args: list[str]) -> None:
-    print("=== cluster_maker demo: clustering analysis ===\n")
-
-    # Require exactly one argument: the CSV file path
-    if len(args) != 2:
-        print("ERROR: Incorrect number of arguments provided.")
-        print("Usage: python demo/demo_cluster_analysis.py [input_csv_file]")
-        sys.exit(1)
-
-    # Input CSV file
-    input_path = args[0]
-    print(f"Input CSV file: {input_path}")
-
-    # Check file exists
-    if not os.path.exists(input_path):
-        print(f"\nERROR: The file '{input_path}' does not exist.")
-        sys.exit(1)
-
-    # Load data so we can inspect numeric columns
-    print("\nLoading data to inspect available features...")
-    df = pd.read_csv(input_path)
-    print("Data loaded successfully.")
-    print(f"Number of rows: {len(df)}")
-    print(f"Columns: {list(df.columns)}")
-
-    # Identify numeric columns
-    numeric_cols = [
-        col for col in df.columns
-        if pd.api.types.is_numeric_dtype(df[col])
-    ]
-
-    if len(numeric_cols) < 5:
-        print("\nERROR: Not enough numeric columns for 2D clustering.")
-        print(f"Numeric columns found: {numeric_cols}")
-        sys.exit(1)
-
-    # Take the first two numeric columns
-    feature_cols = numeric_cols[:2]
-    print(f"Chosen numeric feature columns for clustering: {feature_cols}")
+def main() -> None:
+    print("=== cluster_maker demo: clustering analysis (Self-Contained) ===\n")
     print("-" * 60)
 
+    # --- 2. DATA FIX: Generate and save input data internally ---
+    print("Generating synthetic data...")
+    seed_specs = [
+        {"name": "FeatureA", "reps": [0.0, 5.0, -5.0]},
+        {"name": "FeatureB", "reps": [0.0, 5.0, -5.0]},
+    ]
+    seed_df = define_dataframe_structure(seed_specs)
+    # Generate 300 points in 3 clusters
+    df = simulate_data(seed_df, n_points=300, cluster_std=0.8, random_state=42)
+
+    # Save data to a temporary file (as run_clustering requires a path)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    df.to_csv(TEMP_INPUT_PATH, index=False)
+    
+    input_path = TEMP_INPUT_PATH
+    print(f"Synthetic data saved successfully to: {input_path}")
+    print("-" * 60)
+    # -----------------------------------------------------------
+
+    # Setup features based on the generated column names
+    feature_cols = ["FeatureA", "FeatureB"]
+
+    # No need for command-line argument checks now.
+    
+    # Inspection after generation
+    print("Simulated data loaded and ready for analysis.")
+    print(f"Number of rows: {len(df)}")
+    print(f"Columns: {list(df.columns)}")
+    
     # Validate feature columns using the package function
     try:
+        # We use the DataFrame we generated, but run_clustering uses the CSV saved above.
         _ = select_features(df, feature_cols)
     except Exception as exc:
-        print(f"\nERROR validating features with select_features:\n{exc}")
+        print(f"\nFATAL ERROR validating features with select_features:\n{exc}")
         sys.exit(1)
 
-    # Ensure output directory exists
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-
     # Run the orchestrator
-    print("Running clustering with run_clustering(...)")
+    print("\nRunning clustering with run_clustering(...)")
     result = run_clustering(
-        input_path=input_path,
+        input_path=input_path, # Now points to the generated CSV
         feature_cols=feature_cols,
         algorithm="kmeans",
         k=3,
@@ -109,4 +112,5 @@ def main(args: list[str]) -> None:
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    # Call main() without passing sys.argv, as arguments are no longer needed
+    main()
