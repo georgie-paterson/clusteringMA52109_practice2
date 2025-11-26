@@ -40,8 +40,6 @@ def plot_clusters_2d(
     n_clusters = len(unique_labels)
 
     # Create a discrete colormap using the first n_clusters colors of tab10
-    # Note: tab10 has 10 colors. If n_clusters > 10, we might need a larger palette,
-    # but for this assignment k is usually small.
     if n_clusters <= 10:
         base_cmap = plt.get_cmap("tab10")
         colors = [base_cmap(i) for i in range(n_clusters)]
@@ -50,18 +48,18 @@ def plot_clusters_2d(
         # Fallback for many clusters
         cmap = "viridis"
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 6))
     
-    # We need to ensure the scatter uses the discrete map correctly
-    # We can use a BoundaryNorm or just rely on the ListedColormap with integer labels
-    # if we normalize to [0, n_clusters-1]
-    
+    # Create scatter plot with discrete colormap
     scatter = ax.scatter(
         X[:, 0], 
         X[:, 1], 
         c=labels, 
         cmap=cmap, 
-        alpha=0.8,
+        alpha=0.7,
+        s=50,
+        edgecolors='white',
+        linewidth=0.5,
         vmin=-0.5, 
         vmax=n_clusters - 0.5
     )
@@ -70,21 +68,30 @@ def plot_clusters_2d(
         ax.scatter(
             centroids[:, 0],
             centroids[:, 1],
-            marker="x",
-            s=200,
-            linewidths=2,
+            marker="X",
+            s=300,
+            linewidths=3,
             color="black",
+            edgecolors="white",
             label="Centroids",
+            zorder=10
         )
-        ax.legend()
+        ax.legend(loc='best', frameon=True, shadow=True)
 
-    ax.set_xlabel("Feature 1")
-    ax.set_ylabel("Feature 2")
+    ax.set_xlabel("Feature 1", fontsize=11, fontweight='bold')
+    ax.set_ylabel("Feature 2", fontsize=11, fontweight='bold')
+    
     if title:
-        ax.set_title(title)
+        ax.set_title(title, fontsize=13, fontweight='bold', pad=15)
+    
+    # Add subtle grid
+    ax.grid(True, alpha=0.25, linestyle='--', linewidth=0.5)
+    ax.set_axisbelow(True)
 
     # Discrete ticks for the colorbar
-    cbar = fig.colorbar(scatter, ax=ax, label="Cluster label", ticks=np.arange(n_clusters))
+    cbar = fig.colorbar(scatter, ax=ax, label="Cluster", ticks=np.arange(n_clusters))
+    cbar.ax.set_ylabel("Cluster", fontsize=10, fontweight='bold')
+    
     fig.tight_layout()
     return fig, ax
 
@@ -110,11 +117,31 @@ def plot_elbow(
     if len(k_values) != len(inertias):
         raise ValueError("k_values and inertias must have the same length.")
 
-    fig, ax = plt.subplots()
-    ax.plot(k_values, inertias, marker="o")
-    ax.set_xlabel("Number of clusters (k)")
-    ax.set_ylabel("Inertia")
-    ax.set_title(title)
-    ax.grid(True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    
+    # Plot with enhanced styling
+    ax.plot(
+        k_values, 
+        inertias, 
+        marker="o", 
+        linewidth=2.5,
+        markersize=8,
+        color='#2E86AB',
+        markerfacecolor='#A23B72',
+        markeredgecolor='white',
+        markeredgewidth=1.5
+    )
+    
+    ax.set_xlabel("Number of clusters (k)", fontsize=11, fontweight='bold')
+    ax.set_ylabel("Inertia (WCSS)", fontsize=11, fontweight='bold')
+    ax.set_title(title, fontsize=13, fontweight='bold', pad=15)
+    
+    # Enhanced grid
+    ax.grid(True, alpha=0.3, linestyle='--', linewidth=0.8)
+    ax.set_axisbelow(True)
+    
+    # Set integer ticks for k-axis
+    ax.set_xticks(k_values)
+    
     fig.tight_layout()
     return fig, ax

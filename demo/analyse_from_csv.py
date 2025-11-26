@@ -4,6 +4,25 @@
 ## November 2025
 ###
 
+"""
+Demo script for cluster_maker package: CSV data analysis and export.
+
+This script demonstrates the data analysis functionality including:
+- CSV file loading
+- Numeric summary computation (mean, std, min, max, missing values)
+- Export to CSV and formatted text files
+
+Usage:
+    python demo/analyse_from_csv.py <input_csv_file>
+
+Example:
+    python demo/analyse_from_csv.py demo/sample_data.csv
+
+Output:
+    - demo_output/analysis_summary.csv (machine-readable)
+    - demo_output/analysis_summary.txt (human-readable)
+"""
+
 from __future__ import annotations
 
 import sys
