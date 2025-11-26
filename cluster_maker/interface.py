@@ -28,6 +28,7 @@ def run_clustering(
     random_state: Optional[int] = None,
     compute_elbow: bool = False,
     elbow_k_values: Optional[List[int]] = None,
+    compute_stability: bool = False,  # NEW ARGUMENT (Task 6)
 ) -> Dict[str, Any]:
     """
     High-level function to run the full clustering workflow.
@@ -99,6 +100,25 @@ def run_clustering(
     except ValueError:
         sil = None
     metrics["silhouette"] = sil
+    
+    # ------------------------------------------------------------
+    # Task 6 NEW FEATURE: Cluster Stability Diagnostic
+    # ------------------------------------------------------------
+    stability_score = None
+    if compute_stability:
+        print("Computing cluster stability score...")
+
+        from .stability import cluster_stability_score
+
+        stability_score = cluster_stability_score(
+            X,
+            k=k,
+            random_state=random_state,
+        )
+
+        # Store in metrics dict
+        metrics["stability"] = stability_score
+    
 
     # Add labels to DataFrame
     df = df.copy()
@@ -137,5 +157,6 @@ def run_clustering(
         "fig_cluster": fig_cluster,
         "fig_elbow": fig_elbow,
         "elbow_inertias": elbow_inertias,
+        "stability": stability_score,
     }
     return result

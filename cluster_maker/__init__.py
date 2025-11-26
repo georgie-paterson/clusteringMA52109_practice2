@@ -17,8 +17,9 @@ Allowed libraries:
 
 # --- Data generation & basic analysis ---
 from .dataframe_builder import define_dataframe_structure, simulate_data
-from .data_analyser import calculate_descriptive_statistics, calculate_correlation
-from .data_exporter import export_to_csv, export_formatted
+from .data_analyser import calculate_descriptive_statistics, calculate_correlation, summarise_numeric_columns
+from .data_exporter import export_to_csv, export_formatted, export_summary
+from .stability import cluster_stability_score 
 
 # --- Preprocessing ---
 from .preprocessing import select_features, standardise_features
@@ -53,11 +54,11 @@ __all__ = [
 
     # Analysis
     "calculate_descriptive_statistics",
-    "calculate_correlation",
+    "calculate_correlation", "summarise_numeric_columns",
 
     # Export
     "export_to_csv",
-    "export_formatted",
+    "export_formatted", "export_summary",
 
     # Preprocessing
     "select_features",
@@ -81,4 +82,7 @@ __all__ = [
 
     # High-level orchestration
     "run_clustering",
+    
+    # Stability
+    "cluster_stability_score",
 ]
