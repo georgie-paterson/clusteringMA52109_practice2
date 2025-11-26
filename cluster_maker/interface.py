@@ -73,7 +73,10 @@ def run_clustering(
         - "elbow_inertias": dict mapping k -> inertia (if computed)
     """
     # Load data
-    df = pd.read_csv(input_path)
+    try:
+        df = pd.read_csv(input_path)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Input CSV file '{input_path}' does not exist.") from e
 
     # Select and optionally standardise features
     X_df = select_features(df, feature_cols)
