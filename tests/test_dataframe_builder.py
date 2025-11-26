@@ -33,6 +33,32 @@ class TestDataFrameBuilder(unittest.TestCase):
         self.assertEqual(data.shape[0], 100)
         self.assertIn("true_cluster", data.columns)
 
+    def test_column_summary(self):
+        # DataFrame with numeric + non-numeric + missing values
+        df = pd.DataFrame({
+            "a": [1, 2, None, 4],        # missing value
+            "b": [10, 20, 30, 40],       # no missing
+            "c": [5.5, None, 6.5, 7.5],  # missing value
+            "text": ["x", "y", "z", "w"] # non-numeric
+        })
+
+        from cluster_maker.data_analyser import column_summary
+
+        summary = column_summary(df)
+
+        # Should contain ONLY numeric columns
+        self.assertListEqual(list(summary.index), ["a", "b", "c"])
+
+        # Correct missing-value counts
+        self.assertEqual(summary.loc["a", "n_missing"], 1)
+        self.assertEqual(summary.loc["c", "n_missing"], 1)
+        self.assertEqual(summary.loc["b", "n_missing"], 0)
+
+        # Check correctness of one metric
+        self.assertAlmostEqual(summary.loc["b", "mean"], 25.0)
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
