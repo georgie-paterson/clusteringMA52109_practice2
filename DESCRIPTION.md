@@ -1,139 +1,82 @@
-cluster_maker Package 
+# cluster_maker — Package Description
 
-The cluster_maker package provides a small, self-contained framework for generating synthetic cluster centres, simulating clustered datasets, performing clustering, evaluating cluster quality, and producing plots.
-It is structured as a standard Python package and is used by both the demo scripts and the tests provided in the project.
+`cluster_maker` is a small educational Python package used for synthetic
+data generation, preprocessing, clustering, evaluation, and plotting.
+It is designed for teaching purposes in MA52109 (Programming for Data Science).
 
-1. dataframe_builder.py
+---
 
-This module defines the structure of the “seed” DataFrame that stores cluster centres.
-It contains:
+## 1. Data Generation
 
-define_dataframe_structure()
+### `define_dataframe_structure()`
+Creates a seed DataFrame describing the centres of clusters. Each row
+represents a cluster and each column a feature.
 
-Takes a list of column specifications.
+### `simulate_data()`
+Uses the seed DataFrame to simulate synthetic clustered points with
+Gaussian noise. Produces a DataFrame with feature columns and a 
+`true_cluster` column.
 
-Builds a DataFrame where each row is a cluster and each column a feature.
+---
 
-Ensures:
+## 2. Preprocessing
 
-all reps lists have the same length,
+### `select_features()`
+Extracts user-specified columns from a DataFrame.
 
-all required keys are present,
+### `standardise_features()`
+Applies standardisation (zero mean, unit variance) to numeric arrays.
 
-output has shape (n_clusters, n_features).
+---
 
-simulate_data()
+## 3. Clustering Algorithms
 
-Generates synthetic data by sampling Gaussian noise around the cluster centres.
+### `kmeans()`
+Custom implementation of k-means:
+- centroid initialisation
+- iterative assignment + update
+- returns labels & centroids
 
-Ensures reproducibility through a random seed.
+### `sklearn_kmeans()`
+Wrapper around scikit-learn’s KMeans.
 
-Returns a DataFrame containing all feature columns plus a true_cluster label.
+---
 
-2. preprocessing.py
+## 4. Evaluation
 
-Contains utility functions for preparing input data:
+### `compute_inertia()`
+Measures within-cluster sum of squared distances.
 
-select_features()
+### `silhouette_score_sklearn()`
+Computes silhouette score using sklearn.
 
-Extracts required columns from an input DataFrame.
+### `elbow_curve()`
+Runs clustering for multiple values of *k* and returns inertias.
 
-Raises errors if the columns are missing.
+---
 
-standardise_features()
+## 5. Plotting
 
-Applies standardisation (zero mean, unit variance).
+### `plot_clusters_2d()`
+Simple scatter plot of clustered data + centroids.
 
-Used before running clustering algorithms.
+### `plot_elbow()`
+Plots inertia against the number of clusters.
 
-3. algorithms.py
+---
 
-Implements the clustering algorithms used by the package.
+## 6. High-Level Interface
 
-kmeans()
+### `run_clustering()`
+Full workflow:
+1. Read CSV  
+2. Select & standardise features  
+3. Run chosen clustering algorithm  
+4. Compute metrics  
+5. Generate cluster plot and optional elbow plot  
+6. Export labelled data (optional)
 
-Pure NumPy implementation of K-means.
+---
 
-Includes:
+This package provides the basic structure needed for clustering tasks in the practical exam, including data simulation, algorithm execution, evaluation, and visualisation.
 
-centroid initialisation,
-
-assignment step,
-
-update step,
-
-stopping criterion.
-
-sklearn_kmeans()
-
-Wrapper around sklearn.cluster.KMeans.
-
-4. evaluation.py
-
-Provides metrics and diagnostic tools:
-
-compute_inertia()
-
-SSE for evaluating cluster compactness.
-
-elbow_curve()
-
-Computes inertia for a sequence of k values.
-
-silhouette_score_sklearn()
-
-Uses scikit-learn’s silhouette implementation.
-
-5. plotting_clustered.py
-
-Functions to produce visual output:
-
-plot_clusters_2d()
-
-2D scatter plot of points coloured by cluster.
-
-plot_elbow()
-
-Elbow plot using inertia values.
-
-6. interface.py
-
-This is the high-level orchestrator.
-
-run_clustering()
-
-Coordinates the full workflow:
-
-Read CSV input
-
-Select and optionally standardise features
-
-Run K-means
-
-Compute metrics
-
-Generate plots
-
-Optionally export labelled data
-
-Returns a dictionary containing data, labels, metrics, and figures.
-
-7. demo scripts
-
-The demo script demonstrates how to use the high-level interface:
-
-demo_cluster_analysis.py
-
-Reads a CSV file from the command line.
-
-Automatically selects numeric columns.
-
-Runs clustering through run_clustering().
-
-Saves:
-
-labelled data
-
-cluster plot
-
-elbow plot

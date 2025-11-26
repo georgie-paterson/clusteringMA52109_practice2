@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Dict, Any, List, Optional
 
-import numpy as np
+import os
 import pandas as pd
 
 from .preprocessing import select_features, standardise_features

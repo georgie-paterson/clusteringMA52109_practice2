@@ -15,9 +15,21 @@ Allowed libraries:
 - scikit-learn
 """
 
-# --- Data generation & basic analysis ---
+"""
+cluster_maker
+
+An educational Python package for generating synthetic clustered data,
+running clustering algorithms, evaluating results, and producing
+user-friendly plots.
+"""
+
+# --- Data generation ---
 from .dataframe_builder import define_dataframe_structure, simulate_data
-from .data_analyser import calculate_descriptive_statistics, calculate_correlation
+
+# --- Data analysis (Task 3 will add more functions later) ---
+from .data_analyser import numeric_summary
+
+# --- Export utilities ---
 from .data_exporter import export_to_csv, export_formatted
 
 # --- Preprocessing ---
@@ -52,8 +64,7 @@ __all__ = [
     "simulate_data",
 
     # Analysis
-    "calculate_descriptive_statistics",
-    "calculate_correlation",
+    "numeric_summary",
 
     # Export
     "export_to_csv",
