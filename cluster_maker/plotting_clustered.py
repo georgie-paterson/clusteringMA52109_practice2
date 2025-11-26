@@ -12,80 +12,50 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_clusters_2d(
-    X: np.ndarray,
-    labels: np.ndarray,
-    centroids: Optional[np.ndarray] = None,
-    title: Optional[str] = None,
-) -> Tuple[plt.Figure, plt.Axes]:
-    """
-    Plot clustered data in 2D using the first two features.
+def plot_clusters_2d(X, labels, centroids=None, title="Cluster plot"):
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(8, 6))
 
-    Parameters
-    ----------
-    X : ndarray of shape (n_samples, n_features)
-    labels : ndarray of shape (n_samples,)
-    centroids : ndarray of shape (k, n_features) or None
-    title : str or None
-
-    Returns
-    -------
-    fig, ax : matplotlib Figure and Axes
-    """
-    if X.shape[1] < 2:
-        raise ValueError("X must have at least 2 features for a 2D plot.")
-
-    fig, ax = plt.subplots()
-    scatter = ax.scatter(X[:, 0], X[:, 1], c=labels, cmap="tab10", alpha=0.8)
+    scatter = ax.scatter(X[:, 0], X[:, 1], c=labels, cmap="viridis", alpha=0.7, s=35)
 
     if centroids is not None:
         ax.scatter(
             centroids[:, 0],
             centroids[:, 1],
-            marker="x",
+            marker="X",
             s=200,
-            linewidths=2,
-            color="black",
-            label="Centroids",
+            c="black",
+            label="Centroids"
         )
-        ax.legend()
 
+    ax.set_title(title)
     ax.set_xlabel("Feature 1")
     ax.set_ylabel("Feature 2")
-    if title:
-        ax.set_title(title)
+    ax.legend()
+    cbar = plt.colorbar(scatter)
+    cbar.set_label("Cluster label")
 
-    fig.colorbar(scatter, ax=ax, label="Cluster label")
     fig.tight_layout()
+    plt.close()
+
     return fig, ax
 
 
-def plot_elbow(
-    k_values: List[int],
-    inertias: List[float],
-    title: str = "Elbow Curve",
-) -> Tuple[plt.Figure, plt.Axes]:
-    """
-    Plot inertia vs k (elbow method).
 
-    Parameters
-    ----------
-    k_values : list of int
-    inertias : list of float
-    title : str, default "Elbow Curve"
 
-    Returns
-    -------
-    fig, ax : matplotlib Figure and Axes
-    """
-    if len(k_values) != len(inertias):
-        raise ValueError("k_values and inertias must have the same length.")
+def plot_elbow(k_values, inertias, title="Elbow Curve"):
+    import matplotlib.pyplot as plt
 
-    fig, ax = plt.subplots()
-    ax.plot(k_values, inertias, marker="o")
-    ax.set_xlabel("Number of clusters (k)")
-    ax.set_ylabel("Inertia")
-    ax.set_title(title)
-    ax.grid(True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    ax.plot(k_values, inertias, marker="o", markersize=7, linewidth=2)
+
+    ax.set_title(title, fontsize=14)
+    ax.set_xlabel("Number of clusters (k)", fontsize=12)
+    ax.set_ylabel("Inertia", fontsize=12)
+    ax.grid(True, linestyle="--", alpha=0.6)
+
     fig.tight_layout()
+    
+    plt.close()
     return fig, ax

@@ -45,6 +45,10 @@ from .plotting_clustered import plot_clusters_2d, plot_elbow
 # --- High-level interface ---
 from .interface import run_clustering
 
+# -- PCA tools ---
+from .pca_tools import apply_pca
+
+
 
 __all__ = [
     # Data generation
@@ -81,4 +85,8 @@ __all__ = [
 
     # High-level orchestration
     "run_clustering",
+
+    # PCA tools
+    "apply_pca",
+
 ]

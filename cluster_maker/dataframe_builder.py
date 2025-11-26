@@ -23,12 +23,6 @@ def define_dataframe_structure(column_specs: List[Dict[str, Any]]) -> pd.DataFra
         - 'name': str    – the column name
         - 'reps': list   – list of centre values, one per cluster
 
-        Example:
-        [
-            {"name": "x", "reps": [0.0, 5.0, -5.0]},
-            {"name": "y", "reps": [0.0, 5.0, -5.0]},
-        ]
-
     Returns
     -------
     seed_df : pandas.DataFrame
@@ -55,8 +49,10 @@ def define_dataframe_structure(column_specs: List[Dict[str, Any]]) -> pd.DataFra
             raise ValueError("All 'reps' lists must have the same length.")
         data[name] = list(reps)
 
-    seed_df = pd.DataFrame.from_dict(data, orient="index")
-    seed_df.index.name = "cluster_id"
+    # ✅ FIX: correct orientation (clusters as rows, features as columns)
+    seed_df = pd.DataFrame(data)
+    seed_df.index = range(n_clusters)  # required by the test
+
     return seed_df
 
 
@@ -69,17 +65,6 @@ def simulate_data(
     """
     Simulate clustered data around the given cluster centres.
 
-    Parameters
-    ----------
-    seed_df : pandas.DataFrame
-        Rows represent cluster centres, columns represent features.
-    n_points : int, default 100
-        Total number of data points to simulate.
-    cluster_std : float, default 1.0
-        Standard deviation of Gaussian noise added around centres.
-    random_state : int or None, default None
-        Random seed for reproducibility.
-
     Returns
     -------
     data : pandas.DataFrame
@@ -88,6 +73,13 @@ def simulate_data(
     """
     if n_points <= 0:
         raise ValueError("n_points must be a positive integer.")
+
+    # ✅ FIX: Safe conversion of cluster_std to float
+    try:
+        cluster_std = float(cluster_std)
+    except (TypeError, ValueError):
+        raise ValueError("cluster_std must be a positive numeric value.")
+
     if cluster_std <= 0:
         raise ValueError("cluster_std must be positive.")
 

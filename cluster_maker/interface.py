@@ -16,6 +16,8 @@ from .algorithms import kmeans, sklearn_kmeans
 from .evaluation import compute_inertia, elbow_curve, silhouette_score_sklearn
 from .plotting_clustered import plot_clusters_2d, plot_elbow
 from .data_exporter import export_to_csv
+from .pca_tools import apply_pca
+
 
 
 def run_clustering(
@@ -28,7 +30,9 @@ def run_clustering(
     random_state: Optional[int] = None,
     compute_elbow: bool = False,
     elbow_k_values: Optional[List[int]] = None,
+    use_pca: bool = False,   # Added for PCA integration
 ) -> Dict[str, Any]:
+
     """
     High-level function to run the full clustering workflow.
 
@@ -81,6 +85,11 @@ def run_clustering(
 
     if standardise:
         X = standardise_features(X)
+    
+    # Apply PCA if requested
+    if use_pca:
+        X = apply_pca(X, n_components=2)
+
 
     # Run clustering
     if algorithm == "kmeans":
@@ -137,5 +146,6 @@ def run_clustering(
         "fig_cluster": fig_cluster,
         "fig_elbow": fig_elbow,
         "elbow_inertias": elbow_inertias,
+        "pca_used": use_pca,
     }
     return result
