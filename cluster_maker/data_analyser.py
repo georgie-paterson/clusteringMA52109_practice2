@@ -47,25 +47,37 @@ def calculate_correlation(data: pd.DataFrame) -> pd.DataFrame:
 
 def column_summary(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Compute summary statistics for numeric columns in a DataFrame.
-    Returns a new DataFrame with one row per numeric column, containing:
-    mean, std, min, max, and number of missing values.
-
-    Non-numeric columns are ignored.
+    Compute summary statistics for each column in the DataFrame.
+    Numeric columns receive full statistics.
+    Non-numeric columns are included and clearly reported.
     """
 
-    # Select numeric columns only
-    numeric_df = df.select_dtypes(include="number")
+    rows = []
 
-    summary = {
-        "mean": numeric_df.mean(),
-        "std": numeric_df.std(),
-        "min": numeric_df.min(),
-        "max": numeric_df.max(),
-        "n_missing": numeric_df.isna().sum(),
-    }
+    for col in df.columns:
+        series = df[col]
 
-    # Convert dict of Series to DataFrame
-    summary_df = pd.DataFrame(summary)
+        if pd.api.types.is_numeric_dtype(series):
+            rows.append({
+                "column": col,
+                "type": "numeric",
+                "mean": series.mean(),
+                "std": series.std(),
+                "min": series.min(),
+                "max": series.max(),
+                "n_missing": series.isna().sum(),
+            })
+        else:
+            # clearly report non-numeric
+            rows.append({
+                "column": col,
+                "type": "non-numeric",
+                "mean": np.nan,
+                "std": np.nan,
+                "min": None,
+                "max": None,
+                "n_missing": series.isna().sum(),
+            })
 
+    summary_df = pd.DataFrame(rows).set_index("column")
     return summary_df
