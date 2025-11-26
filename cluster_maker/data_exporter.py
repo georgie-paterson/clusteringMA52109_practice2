@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from typing import Union, TextIO
+from typing import Union, TextIO, List 
 
 import pandas as pd
 
