@@ -11,7 +11,7 @@ from typing import Dict, Any, List, Optional
 import numpy as np
 import pandas as pd
 
-from .preprocessing import select_features, standardise_features
+from .preprocessing import select_features, standardise_features, apply_pca
 from .algorithms import kmeans, sklearn_kmeans
 from .evaluation import compute_inertia, elbow_curve, silhouette_score_sklearn
 from .plotting_clustered import plot_clusters_2d, plot_elbow
@@ -28,6 +28,8 @@ def run_clustering(
     random_state: Optional[int] = None,
     compute_elbow: bool = False,
     elbow_k_values: Optional[List[int]] = None,
+    use_pca: bool = False,
+    pca_components: int = 2,
 ) -> Dict[str, Any]:
     """
     High-level function to run the full clustering workflow.
@@ -76,11 +78,27 @@ def run_clustering(
     df = pd.read_csv(input_path)
 
     # Select and optionally standardise features
+    # Select features (this already checks types & missing columns)
     X_df = select_features(df, feature_cols)
-    X = X_df.to_numpy(dtype=float)
 
+    # Standardise features if requested
+    X = X_df.to_numpy(dtype=float)
     if standardise:
         X = standardise_features(X)
+
+    # Optional PCA step (Task 6 extension)
+    if use_pca:
+        # Apply PCA to the *dataframe*
+        # We pass a DataFrame so column names are preserved
+        pca_df = apply_pca(
+            pd.DataFrame(X, columns=feature_cols),
+            n_components=pca_components,
+            standardise=False  # already standardised above if requested
+        )
+
+        # Replace X with PCA-transformed matrix
+        X = pca_df.to_numpy(dtype=float)
+
 
     # Run clustering
     if algorithm == "kmeans":
@@ -103,10 +121,6 @@ def run_clustering(
     # Add labels to DataFrame
     df = df.copy()
     df["cluster"] = labels
-
-    # Export if requested
-    if output_path is not None:
-        export_summary(df, output_path, delimiter=",", include_index=False)
 
     # Plot clusters (2D)
     fig_cluster, _ = plot_clusters_2d(X, labels, centroids=centroids, title="Cluster plot")
