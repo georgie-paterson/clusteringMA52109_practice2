@@ -11,7 +11,7 @@ from typing import Dict, Any, List, Optional
 import numpy as np
 import pandas as pd
 
-from .preprocessing import select_features, standardise_features
+from .preprocessing import select_features, standardise_features, pca_transform
 from .algorithms import kmeans, sklearn_kmeans
 from .evaluation import compute_inertia, elbow_curve, silhouette_score_sklearn
 from .plotting_clustered import plot_clusters_2d, plot_elbow
@@ -20,10 +20,12 @@ from .data_exporter import export_to_csv
 
 def run_clustering(
     input_path: str,
-    feature_cols: List[str],
+    feature_cols: list[str],
     algorithm: str = "kmeans",
     k: int = 3,
     standardise: bool = True,
+    use_pca: bool = False,
+    pca_components: int = 2,
     output_path: Optional[str] = None,
     random_state: Optional[int] = None,
     compute_elbow: bool = False,
@@ -81,6 +83,9 @@ def run_clustering(
 
     if standardise:
         X = standardise_features(X)
+
+    if use_pca:
+        X = pca_transform(X, n_components=pca_components)
 
     # Run clustering
     if algorithm == "kmeans":
