@@ -125,3 +125,26 @@ def simulate_data(
 
     data = pd.DataFrame.from_records(records)
     return data
+
+    def test_numeric_summary(self):
+        from cluster_maker.data_analyser import numeric_summary
+
+        df = pd.DataFrame({
+            "a": [1, 2, 3, None],   # numeric with missing
+            "b": [10, 20, 30, 40],  # numeric
+            "c": [5.5, 6.5, 7.5, 8.5],  # numeric
+            "label": ["x", "y", "z", "w"]  # non-numeric
+        })
+
+        summary = numeric_summary(df)
+
+        # Should include only numeric columns
+        self.assertListEqual(list(summary["column"]), ["a", "b", "c"])
+
+        # Check missing value count
+        a_missing = summary.loc[summary["column"] == "a", "missing_values"].iloc[0]
+        self.assertEqual(a_missing, 1)
+
+        # Check means are correct
+        b_mean = summary.loc[summary["column"] == "b", "mean"].iloc[0]
+        self.assertAlmostEqual(b_mean, 25.0)
