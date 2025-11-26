@@ -7,6 +7,10 @@ from cluster_maker.dataframe_builder import define_dataframe_structure, simulate
 CENTRE_SPECS = [
     {"name": "Feature_1", "reps": [0.0, 5.0, -5.0]},
     {"name": "Feature_2", "reps": [0.0, -5.0, 5.0]},
+    {"name": "Feature_3", "reps": [0.0, 2.0, -2.0]},
+    {"name": "Feature_4", "reps": [0.0, -2.0, 2.0]},
+    {"name": "Feature_5", "reps": [0.0, 1.0, -1.0]},
+    {"name": "Feature_6", "reps": [0.0, -1.0, 1.0]}
 ]
 
 # 1. Define the structure
