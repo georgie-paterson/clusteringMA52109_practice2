@@ -42,6 +42,9 @@ from .evaluation import (
 # --- Plotting ---
 from .plotting_clustered import plot_clusters_2d, plot_elbow
 
+# --- Cluster quality diagnostics ---
+from .cluster_quality import cluster_quality_report, cluster_quality_summary
+
 # --- High-level interface ---
 from .interface import run_clustering
 
@@ -81,6 +84,10 @@ __all__ = [
     # Plotting
     "plot_clusters_2d",
     "plot_elbow",
+
+    # Cluster quality diagnostics
+    "cluster_quality_report",
+    "cluster_quality_summary",
 
     # High-level orchestration
     "run_clustering",
