@@ -58,3 +58,25 @@ def export_formatted(
             f.write(table_str)
     else:
         file.write(table_str)
+
+
+def export_summary(summary_df: pd.DataFrame, csv_path: str, txt_path: str) -> None:
+    """
+    Export the summary DataFrame to CSV, and also create a human-readable
+    text summary with one line per column.
+    """
+
+    # Write CSV summary
+    summary_df.to_csv(csv_path, index=True)
+
+    # Write readable text summary
+    with open(txt_path, "w") as f:
+        for col, row in summary_df.iterrows():
+            f.write(
+                f"Column: {col} | "
+                f"mean={row['mean']:.4f}, "
+                f"std={row['std']:.4f}, "
+                f"min={row['min']}, "
+                f"max={row['max']}, "
+                f"missing={row['n_missing']}\n"
+            )
