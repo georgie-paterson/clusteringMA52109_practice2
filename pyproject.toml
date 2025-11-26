@@ -1,19 +1,125 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "cluster_maker"
-version = "0.1.0"
-description = "Educational clustering package for MA52109 practical"
-requires-python = ">=3.8"
-dependencies = [
-    "numpy",
-    "pandas",
-    "matplotlib",
-    "scipy",
-    "scikit-learn",
-]
-
-[tool.setuptools.packages.find]
-where = ["."]
+###
+## MA52109: Programming for Data Science
+## Mock Exam - 26/11/2025 - University of Bath
+## Duration: 3 hours, 4:20 pm to 7:20 pm
+##
+## This mock exam consists of a series of tasks (described below).
+##
+## The highest mark obtainable for each task is indicated in square 
+## brackets, [X]. Marks are allocated following clear, correct, and 
+## effective coding. See the separate PDF document on Moodle, 
+## "marking_criteria.pdf", for marking criteria. A maximum of 100 
+## marks can be obtained if all tasks are completed successfully.
+##
+## The current directory was cloned by your fork of 
+## jfoadi/clusteringMA52109.
+## It includes: 
+##  - a Python package, "cluster_maker", 
+##  - "data", "demo", and "tests" directories, 
+##  - a "README.md" file for users of the package,
+##  - a file called "pyproject.toml" to create a local running
+##    environment to execute code including cluster_maker, 
+##  - and this "INSTRUCTIONS" file
+## you are currently reading.
+##
+## Carry out the tasks described below, one after the other, following 
+## the numeric order. So, you should attempt task 2 only after having 
+## completed task 1, and so on.
+###
+##
+## Tasks:
+##
+## 1) Modify one or more files in cluster_maker to run successfully the
+## only test file available in tests. DO NOT modify the test file.
+## [30]
+##
+## 2) The only demo file available in folder "demo", will execute
+## successfully only after you have fixed some errors in its code. This
+## assumes you have successfully fixed the errors in the code of
+## cluster_maker, as instructed in task 1. Once the demo file runs
+## successfully, write a DESCRIPTION.md file that describes what
+## cluster_maker does and explains the functionality of its main parts.
+## [20] 
+##
+## 3) Using ONLY functions from the cluster_maker package and the allowed
+## libraries, do the following:
+##      a) In module "data_analyser.py", add a function that:
+##         - takes as input a pandas DataFrame with numeric columns;
+##         - returns a new DataFrame containing, for each numeric column:
+##           mean, standard deviation, minimum, maximum, and number of
+##           missing values;
+##         - is robust to non-numeric columns (these should be ignored or
+##           clearly reported).
+##      b) In module "data_exporter.py", add a function that:
+##         - takes the summary DataFrame created in part (a);
+##         - writes it to a CSV file;
+##         - writes, to a separate human-readable text file, a neatly
+##           formatted summary (for example, one line per column).
+##      c) Create at least one NEW test function in the existing test file
+##         to check that the new analysis function in (a) works correctly
+##         on a small DataFrame with:
+##          - at least 3 numeric columns,
+##          - at least 1 non-numeric column,
+##          - at least 1 missing value.
+## [10]
+##
+## 4) Create a NEW demo script in the "demo" directory, called 
+## "analyse_from_csv.py". This script must:
+##      a) Be executable from the command line as:
+##             python demo/analyse_from_csv.py path/to/input.csv
+##         If the number of command line arguments is not exactly 2, the
+##         script must:
+##          - print a clear error message;
+##          - print a short "Usage:" line showing the correct syntax;
+##          - exit without raising a traceback.
+##      b) Read the input CSV into a pandas DataFrame.
+##      c) Use the functions you wrote or fixed in "data_analyser.py" and
+##         "data_exporter.py" to:
+##          - compute the numeric summary;
+##          - export it to:
+##           * a CSV file in the "demo_output" directory; and
+##           * a human-readable text file in the same directory.
+##      d) Print informative progress messages to the screen (for example,
+##         when reading the CSV, running the analysis, and saving files),
+##         so that a non-expert user can follow what is happening.
+## [10]
+##
+## 5) Create a NEW test file in the "tests" directory called
+## "test_interface_and_export.py". In this file, using only the standard
+## "unittest" module and the allowed libraries, write tests that check that:
+##      a) Calling the high-level interface function (for example
+##      "run_clustering" in "interface.py") with:
+##          - a missing input file; or
+##          - a CSV file that does not contain the required feature
+##            columns;
+##         results in a clean, controlled error, which means:
+##          - no raw Python traceback;
+##          - a raised exception of an appropriate type (e.g. ValueError
+##            or FileNotFoundError) with a clear error message.
+##      b) The exporting functions in "data_exporter.py":
+##          - create output files when given valid inputs;
+##          - raise a clear, controlled error if given an invalid path
+##            (for example, a directory that does not exist).
+##
+## Hint: You may create small temporary DataFrames inside the tests instead
+## of reading from real CSV files.
+##
+## [10]
+##
+## 6) Advanced task: Add a mathematically or statistically meaningful
+##    extension to the cluster_maker package.
+##
+##    Your extension should:
+##      - introduce a substantial new analytical or computational idea, and
+##      - integrate naturally with the existing clustering workflow.
+##
+##    Examples (you may choose one of these or suggest your own):
+##      – a PCA-based preprocessing option,
+##      – a statistical diagnostic for assessing cluster quality,
+##      – a new clustering method with a clear mathematical basis,
+##      – a tool for comparing different clustering solutions.
+##
+##   You must also add at least one test that verifies the correctness
+##   or numerical stability of your new feature.
+## [20]
+###

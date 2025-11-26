@@ -6,11 +6,15 @@
 
 import unittest
 
+import unittest
 import numpy as np
 import pandas as pd
 
 from cluster_maker.dataframe_builder import define_dataframe_structure, simulate_data
 
+# -------------------------
+# ORIGINAL TESTS (Task 1)
+# -------------------------
 
 class TestDataFrameBuilder(unittest.TestCase):
     def test_define_dataframe_structure_basic(self):
@@ -34,5 +38,34 @@ class TestDataFrameBuilder(unittest.TestCase):
         self.assertIn("true_cluster", data.columns)
 
 
+# -------------------------
+# NEW TEST FOR TASK 3(c)
+# -------------------------
+
+class TestDataAnalyser(unittest.TestCase):
+
+    def test_numeric_summary_function(self):
+        from cluster_maker.data_analyser import numeric_summary
+
+        df = pd.DataFrame({
+            "a": [1, 2, 3, None],   # numeric with missing
+            "b": [10, 20, 30, 40],  # numeric
+            "c": [5.5, 6.5, 7.5, 8.5],  # numeric
+            "label": ["x", "y", "z", "w"]  # non-numeric
+        })
+
+        summary = numeric_summary(df)
+
+        # Should ignore non-numeric column
+        self.assertListEqual(sorted(summary.index.tolist()), ["a", "b", "c"])
+
+        # Check missing count
+        self.assertEqual(summary.loc["a", "missing"], 1)
+
+        # Check means are correct
+        self.assertAlmostEqual(summary.loc["b", "mean"], 25.0)
+
+
+# final runner
 if __name__ == "__main__":
     unittest.main()

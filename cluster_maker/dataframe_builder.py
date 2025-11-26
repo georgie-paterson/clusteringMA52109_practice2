@@ -43,6 +43,10 @@ def define_dataframe_structure(column_specs: List[Dict[str, Any]]) -> pd.DataFra
         raise ValueError("All 'reps' lists must have the same length (number of clusters).")
 
     n_clusters = reps_lengths[0]
+    if n_clusters == 0:
+        raise ValueError("Each 'reps' list must contain at least one value.")       
+    
+    # Build the DataFrame correctly: columns = feature names, rows = clusters
     data = {}
     for spec in column_specs:
         name = spec.get("name")
@@ -55,15 +59,15 @@ def define_dataframe_structure(column_specs: List[Dict[str, Any]]) -> pd.DataFra
             raise ValueError("All 'reps' lists must have the same length.")
         data[name] = list(reps)
 
-    seed_df = pd.DataFrame.from_dict(data, orient="index")
-    seed_df.index.name = "cluster_id"
+    # This gives shape (n_clusters, n_features) with correct column names
+    seed_df = pd.DataFrame(data)
     return seed_df
 
 
 def simulate_data(
     seed_df: pd.DataFrame,
     n_points: int = 100,
-    cluster_std: str = "1.0",
+    cluster_std: float = 1.0,
     random_state: int | None = None,
 ) -> pd.DataFrame:
     """
@@ -88,8 +92,14 @@ def simulate_data(
     """
     if n_points <= 0:
         raise ValueError("n_points must be a positive integer.")
+    
+    try:
+        cluster_std = float(cluster_std)
+    except TypeError:
+        raise TypeError("cluster_std must be convertible to float.") 
+
     if cluster_std <= 0:
-        raise ValueError("cluster_std must be positive.")
+        raise ValueError("cluster_std must be positive.")     
 
     rng = np.random.RandomState(random_state)
     centres = seed_df.to_numpy(dtype=float)
