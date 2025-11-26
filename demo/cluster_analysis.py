@@ -46,7 +46,7 @@ def main(args: list[str]) -> None:
         if pd.api.types.is_numeric_dtype(df[col])
     ]
 
-    if len(numeric_cols) < 5:
+    if len(numeric_cols) < 3:
         print("\nERROR: Not enough numeric columns for 2D clustering.")
         print(f"Numeric columns found: {numeric_cols}")
         sys.exit(1)
