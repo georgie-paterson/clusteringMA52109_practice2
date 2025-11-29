@@ -19,14 +19,18 @@ def main(args: list[str]) -> None:
     print("=== cluster_maker demo: clustering analysis ===\n")
 
     # Require exactly one argument: the CSV file path
-    if len(args) != 2:
+     # Allow zero or one CLI arg: if none provided, use the repo demo CSV
+    if len(args) == 0:
+        # default demo file in the repository
+        input_path = os.path.join(os.path.dirname(__file__), "..", "data", "demo_data.csv")
+        print(f"No input provided — using default demo file: {input_path}")
+    elif len(args) == 1:
+        # single user-supplied CSV path
+        input_path = args[0]
+    else:
         print("ERROR: Incorrect number of arguments provided.")
-        print("Usage: python demo/demo_cluster_analysis.py [input_csv_file]")
+        print("Usage: python demo/cluster_analysis.py [input_csv_file]")
         sys.exit(1)
-
-    # Input CSV file
-    input_path = args[0]
-    print(f"Input CSV file: {input_path}")
 
     # Check file exists
     if not os.path.exists(input_path):
@@ -46,7 +50,7 @@ def main(args: list[str]) -> None:
         if pd.api.types.is_numeric_dtype(df[col])
     ]
 
-    if len(numeric_cols) < 5:
+    if len(numeric_cols) < 2: # Changed from 5 to 2, no need for 5 numeric columns for 2D clustering
         print("\nERROR: Not enough numeric columns for 2D clustering.")
         print(f"Numeric columns found: {numeric_cols}")
         sys.exit(1)
@@ -109,4 +113,9 @@ def main(args: list[str]) -> None:
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(sys.argv[1:]) 
+
+# Changed bottom argument to take sys.argv[1:] (the first argument is the script name)
+# it tells us that the script expects one argument: the input CSV file path, and was 
+# asking for when the length of the argument is not equal to 2, which is incorrect.
+# Now it checks if len(args) != 1, since args is sys.argv[1:] (excluding script name).
