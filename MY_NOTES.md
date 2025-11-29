@@ -5,18 +5,20 @@ Cluster maker is the PACKAGE, its a folder (cluster_maker) containing python mod
 Each .py file inside it are modules with specific responsibilities.
 This is a typical modular architecture: each file contains a set of related functions, and the package combines them together.
 
-Module	                        What it does
-dataframe_builder.py	        Build empty dataframe schema + simulate synthetic datasets
-data_analyser.py	            Summary stats, correlations, describing data
-data_exporter.py	            Save CSVs, formatted tables, summaries
-preprocessing.py	            Feature selection, scaling
-algorithms.py	                Your K-means implementation, centroid init, updating, etc
-evaluation.py	                Inertia, silhouette, elbow curve calculations
-plotting_clustered.py	        Plot clusters and elbow curve
-stability.py (created by me)	Cluster stability score
-interface.py	                High-level function run_clustering() that strings everything together
+| Module                          | What it does                                                     |
+|---------------------------------|------------------------------------------------------------------|
+| `dataframe_builder.py`          | Build empty dataframe schema + simulate synthetic datasets       |
+| `data_analyser.py`              | Summary stats, correlations, describing data                     |
+| `data_exporter.py`              | Save CSVs, formatted tables, summaries                           |
+| `preprocessing.py`              | Feature selection, scaling                                       |
+| `algorithms.py`                 | Your K-means implementation, centroid init, updating, etc        |
+| `evaluation.py`                 | Inertia, silhouette, elbow curve calculations                    |
+| `plotting_clustered.py`         | Plot clusters and elbow curve                                    |
+| `stability.py` *(created by me)*| Cluster stability score                                          |
+| `interface.py`                  | High-level function `run_clustering()` that strings everything together |
 
-# __init__.py file
+
+## __init__.py file
 
 Now the __init__.py file: This is what makes Python treat the folder as a package
 
@@ -40,7 +42,7 @@ Summary:
 - defines the public API wia __all__
 
 
-# dataframe_builder.py file
+## dataframe_builder.py file
 
 This module contains two core funtions:
 - define_dataframe_structure() : builds the dataframe that holds cluster centres
@@ -48,6 +50,25 @@ This module contains two core funtions:
 
 This file is responsible for the first stage of the clustering pipeline: 
 **creating synthetic datasets** that later modules will analyse, preprocess, cluster, evaluate and plot.
+
+**define_dataframe_structure**
+- INPUT: a list of dictionaries (column_specs), of the form key=String, Value=Any. Each dictionary describes a feature/column and its cluster center values
+- OUTPUT: a pandas DataFrame
+
+- Extracts 'reps' from each spec and collects their length, checks that all features have the same number of cluster centre values, by reducing a list into a set and checking the length of the set is 1
+- defines n_clusters as the number of 'reps'
+- creates an empty dictionary called data
+- 
+
+
+
+Handles Errors: 
+- empty input list (ValueError)
+- incorrect 'reps' length for specific features (ValueError)
+- missing 'name' or 'reps' keys (ValueError)
+- 'reps' not being a sequence (TypeError)
+- re-check that reps' lists are the same length (ValueError)
+
 
 
 

@@ -1,0 +1,7 @@
+Summary of Numeric Columns
+========================================
+
+height: mean=169.667, std=7.118, min=160.0, max=180.0, missing=0.0
+weight: mean=67.400, std=9.529, min=55.0, max=80.0, missing=1.0
+age: mean=30.000, std=7.810, min=21.0, max=41.0, missing=1.0
+income: mean=29000.000, std=12529.964, min=18000.0, max=50000.0, missing=1.0
