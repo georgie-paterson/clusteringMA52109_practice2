@@ -58,3 +58,54 @@ def export_formatted(
             f.write(table_str)
     else:
         file.write(table_str)
+        
+
+
+def export_summary(summary_df: pd.DataFrame, csv_path: str, txt_path: str) -> None:
+    """
+    Export a summary DataFrame (created by summarise_numeric_columns)
+    to both a CSV file and a neatly formatted text file.
+
+    Parameters
+    ----------
+    summary_df : pandas.DataFrame
+        Summary statistics DataFrame from data_analyser.summarise_numeric_columns.
+    csv_path : str
+        Output CSV file path.
+    txt_path : str
+        Output plain-text file path.
+
+    Notes
+    -----
+    - Includes friendly, clear error messages.
+    """
+
+    # --- Type checking for robustness ---
+    if not isinstance(summary_df, pd.DataFrame):
+        raise TypeError("summary_df must be a pandas DataFrame.")
+
+    # Write CSV
+    try:
+        summary_df.to_csv(csv_path, index=True)
+    except Exception as exc:
+        raise ValueError(f"Could not write CSV file to '{csv_path}': {exc}")
+
+    # Write human-readable text file
+    try:
+        with open(txt_path, "w", encoding="utf-8") as f:
+            f.write("Summary of Numeric Columns\n")
+            f.write("=" * 40 + "\n\n")
+            for col in summary_df.index:
+                stats = summary_df.loc[col]
+                line = (
+                    f"{col}: "
+                    f"mean={stats['mean']:.3f}, "
+                    f"std={stats['std']:.3f}, "
+                    f"min={stats['min']}, "
+                    f"max={stats['max']}, "
+                    f"missing={stats['missing_values']}"
+                )
+                f.write(line + "\n")
+
+    except Exception as exc:
+        raise ValueError(f"Could not write text summary to '{txt_path}': {exc}")

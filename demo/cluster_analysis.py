@@ -21,11 +21,20 @@ def main(args: list[str]) -> None:
     # Require exactly one argument: the CSV file path
     if len(args) != 2:
         print("ERROR: Incorrect number of arguments provided.")
-        print("Usage: python demo/demo_cluster_analysis.py [input_csv_file]")
+        print("Usage: python demo/cluster_analysis.py [input_csv_file]")
+        # Corrected script name in usage message.
+    # The original message referenced 'demo_cluster_analysis.py',
+    # which does not match the actual filename ('cluster_analysis.py').
+    # A wrong usage message can confuse users.
         sys.exit(1)
 
     # Input CSV file
-    input_path = args[0]
+    input_path = args[1]
+    # Corrected argument index for input CSV.
+    # sys.argv[0] is always the script name, while the actual
+    # CSV file path is sys.argv[1]. Using args[0] makes the script
+    # interpret its own filename as the data path, causing
+    # "file not found" errors even when correct input is provided.
     print(f"Input CSV file: {input_path}")
 
     # Check file exists

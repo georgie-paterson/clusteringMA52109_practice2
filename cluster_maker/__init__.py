@@ -1,3 +1,12 @@
+# this is a docstring for the cluster_maker package,
+# placed in the __init__.py file
+# which is excecuted when the package is imported
+# the purpose of a docstring is to
+# - explain what the code does
+# - help users understand how to use the code
+# - enable tools like help()
+# - improve readability and maintainability
+
 """
 cluster_maker
 
@@ -17,8 +26,9 @@ Allowed libraries:
 
 # --- Data generation & basic analysis ---
 from .dataframe_builder import define_dataframe_structure, simulate_data
-from .data_analyser import calculate_descriptive_statistics, calculate_correlation
-from .data_exporter import export_to_csv, export_formatted
+from .data_analyser import calculate_descriptive_statistics, calculate_correlation, summarise_numeric_columns
+from .data_exporter import export_to_csv, export_formatted, export_summary
+from .stability import cluster_stability_score 
 
 # --- Preprocessing ---
 from .preprocessing import select_features, standardise_features
@@ -31,6 +41,8 @@ from .algorithms import (
     assign_clusters,
     update_centroids,
 )
+# Parentheses are only used to spread long imports across multiple lines for readability; 
+# the behaviour is exactly the same as listing them on one line.
 
 # --- Evaluation ---
 from .evaluation import (
@@ -53,11 +65,11 @@ __all__ = [
 
     # Analysis
     "calculate_descriptive_statistics",
-    "calculate_correlation",
+    "calculate_correlation", "summarise_numeric_columns",
 
     # Export
     "export_to_csv",
-    "export_formatted",
+    "export_formatted", "export_summary",
 
     # Preprocessing
     "select_features",
@@ -81,4 +93,7 @@ __all__ = [
 
     # High-level orchestration
     "run_clustering",
+    
+    # Stability
+    "cluster_stability_score",
 ]
