@@ -12,7 +12,6 @@ import pandas as pd
 from cluster_maker.dataframe_builder import define_dataframe_structure, simulate_data
 from cluster_maker.data_analyser import get_numeric_column_summary
 
-
 class TestDataFrameBuilder(unittest.TestCase):
     def test_define_dataframe_structure_basic(self):
         column_specs = [
@@ -37,9 +36,7 @@ class TestDataFrameBuilder(unittest.TestCase):
 
 
 
-
-
-
+###### Task 3c ########## 
 class TestAnalysisFunctions(unittest.TestCase):
     """Tests for the data analysis functions, including the new summary function."""
 
@@ -118,6 +115,3 @@ if __name__ == "__main__":
 
 
 
-
-if __name__ == "__main__":
-    unittest.main()

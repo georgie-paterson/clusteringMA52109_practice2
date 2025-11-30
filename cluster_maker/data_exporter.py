@@ -12,8 +12,6 @@ import pandas as pd
 
 
 ### Task 3b #######
-
-
 def export_summary_report(
     summary_df: pd.DataFrame,
     base_filename: str,
