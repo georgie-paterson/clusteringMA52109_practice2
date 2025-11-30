@@ -17,11 +17,11 @@ Allowed libraries:
 
 # --- Data generation & basic analysis ---
 from .dataframe_builder import define_dataframe_structure, simulate_data
-from .data_analyser import calculate_descriptive_statistics, calculate_correlation
-from .data_exporter import export_to_csv, export_formatted
+from .data_analyser import calculate_descriptive_statistics, calculate_correlation, column_summary
+from .data_exporter import export_to_csv, export_formatted, export_summary
 
 # --- Preprocessing ---
-from .preprocessing import select_features, standardise_features
+from .preprocessing import select_features, standardise_features, apply_pca
 
 # --- Clustering algorithms ---
 from .algorithms import (
@@ -54,14 +54,17 @@ __all__ = [
     # Analysis
     "calculate_descriptive_statistics",
     "calculate_correlation",
+    "column_summary",
 
     # Export
     "export_to_csv",
     "export_formatted",
+    "export_summary",
 
     # Preprocessing
     "select_features",
     "standardise_features",
+    "apply_pca",
 
     # Algorithms
     "kmeans",
